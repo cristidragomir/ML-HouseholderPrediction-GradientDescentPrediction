@@ -1,0 +1,172 @@
+Dragomir Constantin-Cristian 314CB
+
+Explicarea modului de implementare pentru tema 1 din cadrul 
+materiei
+Metode Numerice
+
+PARTEA I
+
+
+Functia generate_probabilities_system()
+
+Premergator scrierii algoritmului a fost necesara o analiza pe 
+hartie a modului in care se va initializa matricea A.
+Astfel, deducem ca pe diagonala principala se vor scrie 4,5,6 - 
+ceea ce reprezinta numarul maxim de directii pe care se poate
+deplasa soarecele.
+
+Ulterior se vor initializa cu -1 anumiti coeficienti din matrice
+pentru a respecta ecuatiile aferente problemei.
+
+Se construieste coloana termenilor liberi avand semnificatia 
+precizata in enunt.
+
+Anumite cazuri sunt tratate separat, cum ar fi: prima linie, 
+ultima linie specifice triungiului, primele, ultimele elemente 
+de pe fiecare linie in corelatie cu triunghiul din problema.
+
+
+Functia matrix_to_csr()
+
+Se parcurge matricea A si se construiesc treptat vectorii de 
+compresie a matricei A.
+
+
+Functia Jacobi_factorization()
+
+Se prelucreaza matricea A astfel incat sa fie construite
+obiectele necesare aplicarii metodei Jacobi.
+
+
+Functia Jacobi_sparse()
+
+Se genereaza aproximatia initiala, un vector de lungime egala cu
+numarul de ecuatii care rezolva problema propusa in tema
+
+Ulterior se aplica metoda iterativa Jacobi pentru a afla o 
+aproximatie "suficient de apropiata" de cea exacta.
+
+
+PARTEA II
+
+
+Functia clustering_pc()
+
+Se utilizeaza o matrice L in care se pastreaza indecsii 
+punctelor pe linia corespunzatoare in functie de initializare 
+si reamplasare a acestora pana se gasesc centroizii suficient 
+de buni.
+
+
+Functia compute_cost_pc()
+
+Se calculeaza distantele minime (punct - centroid) si se aduna 
+la o variabila avand initial valoarea 0.
+
+
+PARTEA III
+
+
+Functia rgbHistogram()
+
+Se citeste matricea cu pixeli.
+Se separa pe vectori coloana valorile R,G,B ale tuturor 
+pixelilor. Se realizeaza histogramele si se concateneaza 
+astfel incat sa functia sa returneze un singur vector.
+
+
+Functia hsvHistogram()
+
+Se citeste matricea cu pixeli si se face cast la double
+tuturor elementelor. Se va construi o matrice de 3 coloane
+in care se vor pastra toate valorile RGB din imagine
+Ne folosim de mai multi vectori coloana pentru a realiza
+diverse operatii care ar fi consumat mai mult timp pe cale
+iterativa. In construirea lor se face uz de functia find()
+pentru a afla anumiti indici ai elementelor care vor fi
+folositi in diverse scopuri. Prin manipularea inteligenta a
+acestor vectori, precum si prin respectarea algortimului de 
+conversie, se determina valorile H,S,V ale pixelilor
+normati in intervalul [0,1]. Ulterior se realizeaza
+histogramele si se concateneaza vectorii specifici pentru
+a obtine un vector solutie.
+
+
+Functia preprocess()
+
+Se genereaza caile complete catre imagini, se realizeaza
+histograma ceruta prin parametru si se concateneaza intr-o
+matrice X. De asemenea, se completeaza vectorul y - ce
+reprezinta clasa in care se situeaza o imagine.
+
+
+Functia learn()
+
+Se bordeaza matricea X cu o coloana de 1 si se foloseste
+functia SST pentru a determina vectorul w.
+
+
+Functia SST()
+
+Se foloseste de functia Householder() pentru realizarea unei
+forme echivalente a matricei X (X = QR; Q - matrice 
+ortogonala, R - matrice superior triunghiulara). Ulterior, se 
+rescrie sistemul ca R*w = Q_transpus*b. In final, se rezolva
+sistemul superior triunghiulat si se returneaza vectorul 
+solutie.
+
+
+Functia Householder()
+
+Se respecta implementarea folosita la laborator, dar a fost
+eliminata caracteristica prin care se transforma si coloana
+termenilor liberi, ramanand drept functionalitate
+descompunerea QR.
+
+
+Functia evaluate()
+
+Se determina caile complete catre imaginile de test, se 
+realizeaza rand pe rand histograma si se face produsul scalar 
+dintre vectorul w si histograma bordata cu 1 si, in functie de
+rezultat si vectorul de clase de imagini se incrementeaza sau
+nu numarul de poze corect prezise. La final se calculeaza
+procentul de imagini corect incadrate.
+
+
+PARTEA IV
+
+
+Functiile rgbHistogram() si hsvHistogram() au aceeasi 
+implementare ca la Partea III.
+
+
+Functia preprocess()
+
+Similara cu implementarea de la Partea III, cu mici modificari:
+- vectorul de clase y este generat in stil vectorial
+- interschimbare intre un for si un if pentru micsorarea
+  timpului de executie
+
+
+Functia learn()
+
+Se scaleaza coloanele matricei X, apoi se bordeaza cu coloana 
+1. Se completeaza cu valori random, din intervalul 
+[-0.1,0.1], a vectorului de invatare w. Ulterior, se aplica
+algoritmul mentionat in tema, prin transformarea cu grija
+a sumelor in produse de matrici, ceea ce duce la un timp
+de executie mai rapid, avand in vedere ca acest algoritm
+trebuie aplicat de mai multe ori.
+
+
+Functia evaluate()
+
+Se construieste matricea X, vectorul y de clase,
+corespunzatoare setului de testare.
+Coloanele matricei se scaleaza, iar intreaga matrice este 
+bordata cu o coloana de 1. Intr-un vector (ev) se face 
+produsul dintre matrice si vectorul coloana w astfel incat sa 
+fie retinute predictiile. Acest vector se parcurge si in
+functie de valoare si vectorul y se decide asupra actualizarii
+unor contori. La final, se calculeaza acuratetea predictiilor.
